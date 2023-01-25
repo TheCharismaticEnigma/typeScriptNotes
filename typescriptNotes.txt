@@ -1,1 +1,174 @@
-TYPESCRIPT
+TYPESCRIPT: 
+
+NOTE: TS is Js running with JAVA features. 
+
+- A programming language to address shortcomings of JS 
+- Built on top of JS. Every JS file is a TS file. 
+- can be used on frontend and backend. Anything js does, TS does too.
+- Superset of JS. In TS File all js code is valid TS code.  
+
+DRAWBACKS: 
+
+- compilation (parsing and convertion from TS to JS) is always needed 
+because browsers right now can't understand TS. 
+
+- TS compiler takes TS code and converts to js code. (TRANSPILATION) 
+
+- More discipline required. So, use for med-large size projects. 
+
+- npm needed to install typescript compiler 
+
+Benefits of TS : 
+--------------
+
+Type Checking  
+Code Completion  
+Refactoring 
+New Features 
+
+a) static typing: 
+- can have data types for variables 
+- explicitly set the data type of variables at compile time (like JAVA)
+- code is parsed by TS compiler and errors are displayed at compile time
+
+- We don't have to run our application to get the syntax 
+errors at runtime.
+
+
+Installation using node/npm :
+------------------------------ 
+
+npm i -g typescript 
+
+tsc -v  ... (typescript compiler --version)
+
+In terminal/git bash: 
+
+tsc file.ts  ==> compiles and produces another file.js file which contains
+compiled code in js.  
+
+FOR COMPILING TS code write this in terminal... tsc file.ts 
+
+
+ANNOTATING A VARIABLE TO a given type : 
+-------------------------------------
+
+let age: number = 20 ; 
+
+CONFIGURING file for the typescript compiler (tsc) : 
+In the terminal , 
+tsc --init
+
+By convention, put the source TS files/code inside a folder.(src) 
+Modify: 
+
+rootDir: "./src" -> where our ts files will be stored 
+outDir: "./dist" -> where our js files will be stored (distributable folder)
+removeComments : true => our compiled JS won't contain any commends in TS files. 
+noEmitOnError: true => tsc won't generate js files if error in ts files. 
+sourceMap: true => specifies how each line of ts maps to generated line of JS code. 
+                   creates a .js.map file in dist folder for debuggers . 
+
+After configuring, we can compile all files in project by simply 
+running tsc in terminal without file name. 
+So all ts files => src directory
+   all js files => dist(ributable) directory 
+
+Configure the tsc by en/disabling various settings in tsconfig.json
+file generated using tsc -init command. 
+
+BUILT IN TYPES: 
+
+JS - number, string, boolean, undefined, null, bigInt, symbol, object
+TS - any, unknown, never, enum, tuple 
+
+In TS, separate a large number's digits with _ 
+let sales:number = 123_456_789 ; 
+
+NOTE: TS compiler automatically infers/detects the data type of 
+a variable without you annotating it to the 
+variable (based on the value) ; 
+Ex. let theName:number = 123 ; .... (same as let theName = 123) 
+
+If variable is declared and not initialized with a value --> 
+TS implicitly gives it type ANY as We can set it to any value (like in JS)
+
+function render(document:any) { ... }
+
+IMPORTANT: not recommended. 
+To remove these erros, in tsconfig.json file set the noImplicitAny:false
+
+ARRAYS: 
+
+In js arrays, each element can have DIFFERENT DATA TYPE.
+IN TS, explicit data type annotation(adding notes for explanation)
+of the data type to an array is possible 
+
+let numbers:number[] = [1,2,3,4] ; 
+
+If empty array, by default type is any[] (that is JS arrays) 
+
+TUPLES: 
+- fixed length array with each element having a particular type.
+- used when working with pair of values. 
+- internally represented using JS[]. After compilation, converted to
+  regular js[] . 
+- Best Practice: Restrict tuple to size of 2 (like key value pair)
+
+let user : [number, string] = [102121, 'Mosh Hamedani'] ; 
+
+ENUMS: 
+-----
+
+- represents list of RELATED CONSTANTS (grouped together) 
+- follows PASCALNAMINGCONVENTION for enum name and members 
+- by default values are given from 0, 1, ... for each member. 
+- Can explictly assign desired values (also strings) for constants. 
+
+NOTE: If enums are defined using CONSTANTs, TS comiler generates More
+optimized JS code while TRANSPILATION. 
+
+const enum Name {
+  first = "Avi",
+  mid = "V",
+  last = "Wal",
+}
+const first: Name = Name.first;
+const mid: Name = Name.mid;
+const last: Name = Name.last;
+
+const fullName = `My full name is ${first} ${mid} ${last}`;
+
+FUNCTIONS: 
+---------
+
+- AS best practice, ALL PARAMETERS AND RETURN TYPES of FUNCTIONS
+should be annotated. TS enables that. 
+- enables to set the return type of function 
+- return type is void IF NO value is returned from function 
+- compilation error if local variables are defined and not used 
+- compilation error for unused parameters 
+- JS by default always returns undefined from our functions. So TS compiler
+warns us as returning undefined from function can cause bugs.
+
+- Unlike in JS where arguments can be more/less than parameter count, 
+argument count and type in TS must be exactly matching
+to that of parameters count and data type annotated to parameters. (like JAVA)
+
+- Can make a parameter optional using parameterName?:number syntax 
+
+function tax (income:number):void { 
+    ... calculates tax but returns no value as return 
+    type is set to void. 
+
+    return ; 
+}
+
+function getSize (size?:number):number { 
+    Here size is an OPTIONAL parameter. 
+    by default parameters are undefined 
+    if arguments are not passed but still used. 
+
+    return size || 'Small'  ;  
+}
+
