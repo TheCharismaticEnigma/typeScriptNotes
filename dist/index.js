@@ -1,6 +1,10 @@
 "use strict";
-function getSize(size) {
-    return size || 12;
-}
-console.log(getSize());
+let Person = {
+    name: "Enimga",
+    birthYear: 1993,
+    age: function () {
+        return 2023 - this.birthYear;
+    },
+};
+console.log(Person.age());
 //# sourceMappingURL=index.js.map

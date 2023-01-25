@@ -1,6 +1,6 @@
 TYPESCRIPT: 
 
-NOTE: TS is Js running with JAVA features. 
+NOTE: TS is like having JS with JAVA features and behavior .  
 
 - A programming language to address shortcomings of JS 
 - Built on top of JS. Every JS file is a TS file. 
@@ -49,7 +49,6 @@ compiled code in js.
 
 FOR COMPILING TS code write this in terminal... tsc file.ts 
 
-
 ANNOTATING A VARIABLE TO a given type : 
 -------------------------------------
 
@@ -80,7 +79,7 @@ file generated using tsc -init command.
 BUILT IN TYPES: 
 
 JS - number, string, boolean, undefined, null, bigInt, symbol, object
-TS - any, unknown, never, enum, tuple 
+TS - any, enum, tuple,unknown, never
 
 In TS, separate a large number's digits with _ 
 let sales:number = 123_456_789 ; 
@@ -111,8 +110,8 @@ If empty array, by default type is any[] (that is JS arrays)
 TUPLES: 
 - fixed length array with each element having a particular type.
 - used when working with pair of values. 
-- internally represented using JS[]. After compilation, converted to
-  regular js[] . 
+- internally represented using JS[]. After compilation, converted 
+  to regular js[] . 
 - Best Practice: Restrict tuple to size of 2 (like key value pair)
 
 let user : [number, string] = [102121, 'Mosh Hamedani'] ; 
@@ -169,6 +168,25 @@ function getSize (size?:number):number {
     by default parameters are undefined 
     if arguments are not passed but still used. 
 
-    return size || 'Small'  ;  
+    return size || 12  ;  
 }
 
+OBJECTS: 
+
+- In JS, objects are dynamic. 
+- object structure can be annotated like variable data type. 
+- properties can be made optional 
+- readonly keyword can be used to make a property read only
+- for methods, their signature must be annotated 
+
+let Person: {
+  name: string;
+  readonly birthYear: number;
+  age?: () => number;
+} = {
+  name: "Enigma",
+  birthYear: 1993,
+  age: function () {
+    return 2023 - this.birthYear;
+  },
+};
