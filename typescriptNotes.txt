@@ -22,7 +22,7 @@ Benefits of TS :
 --------------
 
 Type Checking  
-Code Completion  
+AUTO Code Completion  
 Refactoring 
 New Features 
 
@@ -58,7 +58,10 @@ CONFIGURING file for the typescript compiler (tsc) :
 In the terminal , 
 tsc --init
 
-By convention, put the source TS files/code inside a folder.(src) 
+By convention: 
+PUT the source TS files/code inside a folder.(src) 
+And the compiled files will be in dist(ributable) folder. 
+
 Modify: 
 
 rootDir: "./src" -> where our ts files will be stored 
@@ -78,7 +81,9 @@ file generated using tsc -init command.
 
 BUILT IN TYPES: 
 
-JS - number, string, boolean, undefined, null, bigInt, symbol, object
+JS - number, string, boolean, undefined,
+              null, bigInt, symbol, object
+
 TS - any, enum, tuple,unknown, never
 
 In TS, separate a large number's digits with _ 
@@ -91,6 +96,7 @@ Ex. let theName:number = 123 ; .... (same as let theName = 123)
 
 If variable is declared and not initialized with a value --> 
 TS implicitly gives it type ANY as We can set it to any value (like in JS)
+Which doesn't make sense because it is JS behavior 
 
 function render(document:any) { ... }
 
@@ -99,7 +105,7 @@ To remove these erros, in tsconfig.json file set the noImplicitAny:false
 
 ARRAYS: 
 
-In js arrays, each element can have DIFFERENT DATA TYPE.
+In JS arrays, each element can have DIFFERENT DATA TYPE.
 IN TS, explicit data type annotation(adding notes for explanation)
 of the data type to an array is possible 
 
@@ -154,7 +160,8 @@ warns us as returning undefined from function can cause bugs.
 argument count and type in TS must be exactly matching
 to that of parameters count and data type annotated to parameters. (like JAVA)
 
-- Can make a parameter optional using parameterName?:number syntax 
+- Can make a parameter optional using syntax: 
+parameterName?:number  
 
 function tax (income:number):void { 
     ... calculates tax but returns no value as return 
@@ -170,6 +177,14 @@ function getSize (size?:number):number {
 
     return size || 12  ;  
 }
+
+
+NOTE: 
+1. Use tsc (typescript compiler) to transpile the code 
+2. Then use node ... path to js file command to run JS in terminal
+Ex. tsc index.ts 
+    node ./dist/index.js
+
 
 OBJECTS: 
 
@@ -190,3 +205,232 @@ let Person: {
     return 2023 - this.birthYear;
   },
 };
+
+TOPIC: TYPE ALIASES: (Custom Types)  
+-------------------
+
+NOTE: Using TYPE ALIASES we can define a custom type. 
+CAN solve all problems in above object structure: 
+
+1. Too hard to understand
+
+2. Doesn't have a dynamic structure. Has a fixed SHAPE.  
+     New objects can have different properties. 
+
+3. To create another similar object, we'd have to repeat structure. 
+   And thus violate DRY structure 
+
+Using type ALIASES, can set the structure at one place and 
+reuse it multiple times. (like classes and Objects) 
+
+type Employee = { 
+  readonly id: number, 
+  name: string, 
+  retire: (date: Date) => void 
+}
+
+let employee1 : Employee = { 
+  id: 1, 
+  name: 'AH', 
+  reture: (date: Date) => console.log(date) ; 
+}
+
+let employee2 : Employee = { 
+  id: 2, 
+  name: 'TS', 
+  reture: (date: Date) => console.log(date) ; 
+}
+
+NOTE: Using type ALIASES, we can define a object structure once
+and reuse it with different values multiple times. 
+
+
+TOPIC: UNION TYPES 
+------------------
+
+- With Union Types (|) can give a function/variable parameter of
+  more than one data type. It can be one of many types 
+
+- The parameter can be of one/more Data types. And so we handle 
+multiple different scenarios. 
+
+function kgToLbs (weight: number|string): number { 
+  weight can be of type number or of type string. 
+
+  // Then for each data type we handle the case 
+
+  if (typeof weight === 'number')
+    .... 
+  
+  if (typeof weight == 'string') .... 
+}
+
+
+TOPIC: INTERSECTION TYPES : 
+----------------------------
+
+- used for parameters/variables which are an intersection of MULTIPLE 
+DATA TYPES. 
+
+- used for CUSTOM type ALIASES. 
+ex. Parameter should be of type Draggable and Resizable
+
+- Can create a new Type which is intersection/combination of MULTIPLE
+types.   ex. type UIWidget = Draggable & Resizable ; 
+
+type Draggable = { 
+  drag: () => void ; 
+}
+
+type Resizable = { 
+  resize: () => void 
+}
+
+// In the new type, initialize ALL MEMBERS OF Draggable and Resizable
+// object. 
+
+type UIWidget = Draggable & Resizable ;
+
+let textBox: UIWidget = { 
+  drag: () => {}, 
+  resize: () => { }, 
+}
+
+TOPIC: LITERAL TYPES : 
+--------------------
+
+- limiting values assigned to a variable. 
+- we annotate variable with LITERAL/Exact/specific value(s) 
+- the variable MUST be set to one of those values. 
+- Literals can be Strings, numbers, and etc. 
+
+type Units = 'kg' | 'lbs' ; (Type ALIASES + Union Type) 
+
+let unit1 : Units = 'kg' ; 
+let unit2 : Units = 'lbs' ; 
+
+// Anything else won't be accepted. 
+
+
+TOPIC: Nullable Types (null | undefined) 
+
+- by default TS doesn't allow nullable types to be passed 
+- if in case we need them we can pass using UNION Types. 
+
+Ex. name: string|null|undefined 
+
+
+TOPIC: OPTIONAL CHAINING: 
+------------------------
+
+- enables error handling without if.. else statements. 
+- Used in combination with Nullish Coaelscing Operator. 
+- (?. + ??) to have a fallback default value. 
+
+Ex. customer?.birthday?.getFullYear() ; 
+Ex. customers?.[0] 
+Ex. variableName?.(arguments..) . 
+
+Above code expressions Will be executed if variable name
+    references an actual function/object
+
+
+WHEN working will nullish values, you need a fallback default 
+value ==> Nullish Coaelscing Operator is used for that 
+Ex. customers?.[0] ?? 'No Customers' 
+
+
+TOPIC: Type Assertions: (as keyword OR <>) 
+-----------------------
+
+IMPORTANT: The 'as' keyword doesn't perform any TYPE CONVERSION. 
+It just asserts that we know more about the data type of an element 
+than TSC 
+
+let phone = document.getElementById('phone') as HTMLInputElement ; 
+phone.value 
+
+NOTE: IF the object is not of Assterted type (HTMLInputElement), 
+then at the point where we're trying to access value property, 
+the code will crash. THERE IS NO TYPE CONVERSION. 
+
+SYNTAX-1 : 
+let phone = <HTMLInputElement> document.getElementById('phone') ; 
+
+SYNTAX-2 : 
+let phone = document.getElementById('phone') as HTMLInputElement ; 
+
+
+TOPIC: UNKNOWN TYPE 
+--------------------
+
+- Safer version of any. Represents Any value but unlike any, we 
+can't perform any operatons on unknown type BEFORE using type-GUARD
+for different types. 
+
+NOTE: USING UNKNOWN TYPE >>>> ANY TYPE. 
+As compiler makes us to use TYPE-Checking to make sure that 
+methods we're calling exist
+
+In any type compiler does no checking 
+
+Used Where we don't know the TYPE Of element beforehand, and 
+there can be multiple data types possible. 
+
+Can use NARROWING USING TYPE-GUARD to handle multiple scenarios. 
+
+1. if (typeof document === 'string') { 
+       .. here we'll have access to all string methods.
+       as TSC knows that this document is a string object. 
+   }
+
+NOTE: typeof operator -> works for primitive types 
+If custom object is created from classes then , 
+instanceOf operator
+
+Ex. function render (document:unknown) { 
+    if primitive type => typeof 
+    if reference type => instanceof 
+
+    if (typeof document === 'number') { 
+      .... access to all inbuilt number methods
+    }
+
+    if (typeof document === 'string') { 
+      ... access to all inbuilt number methods. 
+    }
+}
+
+TOPIC => NEVER TYPE
+-------------------
+
+- Represents value that never occur. 
+- Helps detect UNREACHABLE CODE which would be ignored otherwise. 
+- Compiler infers return type void and thus the UNREACHABLE code isn't 
+detected.
+
+NOTE: CASE 1 
+
+function reject(message:string ='Error Message'): never { 
+  ... 
+  throw new Error(message) ; 
+}
+
+reject() ; 
+console.log('This is an unreachable code which will be detected now
+at compile time only') ; 
+
+NOTE: CASE 2 
+
+function reject(message:string ='Error Message') { 
+  ... 
+  throw new Error(message) ; 
+}
+
+reject() ; 
+
+console.log('This is an unreachable code that will NOT
+be detected now at compile time because Compiler infers the 
+return type of reject function to be void. ') ; 
+
+
