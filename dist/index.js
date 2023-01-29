@@ -1,27 +1,31 @@
 "use strict";
-const firstEmployee = {
-    id: 1212121,
-    name: "Uncooked Sausage",
-    tenure: 25,
-    canRetire: function (tenure) {
-        tenure = tenure || this.tenure;
-        return tenure > 5;
-    },
-};
-const secondEmployee = {
-    id: 121212121,
-    name: "Skinny Twerp",
-    tenure: 15,
-    canRetire: function (tenure) {
-        tenure = tenure || this.tenure;
-        return tenure > 10;
-    },
-};
-function kgToLbs(weight) {
-    if (typeof weight === "number")
-        return Math.trunc(weight * 2.2);
-    return parseInt(weight) * 2.2;
+class Person {
+    constructor(speciesName, name, _gender) {
+        this.speciesName = speciesName;
+        this.name = name;
+        this._gender = _gender;
+    }
+    canEat() {
+        console.log(`canEat`);
+    }
+    get gender() {
+        return this._gender;
+    }
+    set gender(gender) {
+        this._gender = gender;
+    }
 }
-console.log(kgToLbs(100));
-console.log(kgToLbs("10"));
+class Student extends Person {
+    constructor(speciesName, name, gender, studentId) {
+        super(speciesName, name, gender);
+        this.studentId = studentId;
+    }
+    attendSchool() {
+        console.log(`attends school`);
+    }
+}
+const myself = new Student(`HomoSapian`, `Avi`, `Tranny`, `12121`);
+myself.gender = "Male";
+console.log(myself.gender);
+myself.canEat();
 //# sourceMappingURL=index.js.map

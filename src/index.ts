@@ -38,7 +38,7 @@ const Person: {
 };
 
 */
-
+/*
 type Employee = {
   readonly id: number;
   name: string;
@@ -70,12 +70,106 @@ const secondEmployee: Employee = {
 // console.log(secondEmployee.name);
 
 function kgToLbs(weight: number | string): number {
-  // Narrowing
+  // Narrowing using type guarding
 
   if (typeof weight === "number") return Math.trunc(weight * 2.2);
 
   return parseInt(weight) * 2.2; // here data type is string
 }
 
-console.log(kgToLbs(100));
-console.log(kgToLbs("10"));
+// console.log(kgToLbs(100));
+// console.log(kgToLbs("10"));
+
+*/
+
+// Class in TS
+
+/*
+class Account {
+  // readonly id: number;
+  // private _owner: string;
+  // balance: number;
+  nickname?: string;
+
+  constructor(
+    public readonly id: number,
+    private _owner: string,
+    public balance: number
+  ) {
+    // this.id = id;
+    // this.balance = balance;
+    // this._owner = owner; // in TS, this references current class.
+  }
+
+  deposit(amount: number): void {
+    if (amount <= 0) throw new Error("AHAAHAH Twerp!");
+
+    this.balance += amount;
+  }
+
+  getOwner(): string {
+    return this._owner;
+  }
+}
+
+const myAccount = new Account(12121, "Enigma", 0);
+myAccount.deposit(120);
+const owner: string = myAccount.getOwner();
+
+console.log(owner);
+*/
+
+// Interface (Homo Sapien) => Person => Teacher and Student
+
+interface Species {
+  readonly speciesName: string;
+  canEat(): void; // abstract method
+}
+
+// Super Class
+
+class Person implements Species {
+  constructor(
+    public readonly speciesName: string,
+    public name: string,
+    private _gender: string
+  ) {}
+
+  canEat(): void {
+    console.log(`canEat`);
+  }
+
+  get gender() {
+    return this._gender;
+  }
+
+  set gender(gender: string) {
+    this._gender = gender;
+  }
+}
+
+// Super Class => Person
+
+class Student extends Person {
+  constructor(
+    speciesName: string,
+    name: string,
+    gender: string,
+    public studentId: string
+  ) {
+    super(speciesName, name, gender);
+    // this.studentId = studentId
+  }
+
+  // getter,setter,canWalk() will be inherited from parent.
+
+  attendSchool(): void {
+    console.log(`attends school`);
+  }
+}
+
+const myself: Student = new Student(`HomoSapian`, `Avi`, `Tranny`, `12121`);
+myself.gender = "Male";
+
+console.log(myself.gender);
+myself.canEat();

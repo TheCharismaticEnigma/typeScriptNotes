@@ -1,6 +1,8 @@
 TYPESCRIPT: 
 
-NOTE: TS is like having JS with JAVA features and behavior .  
+NOTE: TS is like having JS with JAVA features and behavior . 
+OOP like JAVA, Static Typing like JAVA, Generics like JAVA. 
+In short combination of JAVA and JS 
 
 - A programming language to address shortcomings of JS 
 - Built on top of JS. Every JS file is a TS file. 
@@ -22,7 +24,7 @@ Benefits of TS :
 --------------
 
 Type Checking  
-AUTO Code Completion  
+AUTO Code Completion/IntelliSense 
 Refactoring 
 New Features 
 
@@ -60,11 +62,11 @@ tsc --init
 
 By convention: 
 PUT the source TS files/code inside a folder.(src) 
-And the compiled files will be in dist(ributable) folder. 
+And the compiled files (.js) will be in dist(ributable) folder. 
 
 Modify: 
 
-rootDir: "./src" -> where our ts files will be stored 
+rootDir: "./src" -> where our ts files will be stored (source folder) 
 outDir: "./dist" -> where our js files will be stored (distributable folder)
 removeComments : true => our compiled JS won't contain any commends in TS files. 
 noEmitOnError: true => tsc won't generate js files if error in ts files. 
@@ -84,7 +86,7 @@ BUILT IN TYPES:
 JS - number, string, boolean, undefined,
               null, bigInt, symbol, object
 
-TS - any, enum, tuple,unknown, never
+TS - any,unknown,never, enum, tuple
 
 In TS, separate a large number's digits with _ 
 let sales:number = 123_456_789 ; 
@@ -150,7 +152,7 @@ FUNCTIONS:
 - AS best practice, ALL PARAMETERS AND RETURN TYPES of FUNCTIONS
 should be annotated. TS enables that. 
 - enables to set the return type of function 
-- return type is void IF NO value is returned from function 
+- return type is void(by default) IF NO value is returned from function 
 - compilation error if local variables are defined and not used 
 - compilation error for unused parameters 
 - JS by default always returns undefined from our functions. So TS compiler
@@ -183,12 +185,14 @@ NOTE:
 1. Use tsc (typescript compiler) to transpile the code 
 2. Then use node ... path to js file command to run JS in terminal
 Ex. tsc index.ts 
-    node ./dist/index.js
+    node dist/index.js
 
 
 OBJECTS: 
 
-- In JS, objects are dynamic. 
+- In JS, objects are dynamic. TS is stickler regarding
+ shape/structure of objects.
+
 - object structure can be annotated like variable data type. 
 - properties can be made optional 
 - readonly keyword can be used to make a property read only
@@ -252,7 +256,7 @@ TOPIC: UNION TYPES
   more than one data type. It can be one of many types 
 
 - The parameter can be of one/more Data types. And so we handle 
-multiple different scenarios. 
+multiple different scenarios. (By narrowing via type-GUARD)
 
 function kgToLbs (weight: number|string): number { 
   weight can be of type number or of type string. 
@@ -272,7 +276,7 @@ TOPIC: INTERSECTION TYPES :
 - used for parameters/variables which are an intersection of MULTIPLE 
 DATA TYPES. 
 
-- used for CUSTOM type ALIASES. 
+- used with CUSTOM type ALIASES. 
 ex. Parameter should be of type Draggable and Resizable
 
 - Can create a new Type which is intersection/combination of MULTIPLE
@@ -299,7 +303,7 @@ let textBox: UIWidget = {
 TOPIC: LITERAL TYPES : 
 --------------------
 
-- limiting values assigned to a variable. 
+- limiting values that can be assigned to a variable. 
 - we annotate variable with LITERAL/Exact/specific value(s) 
 - the variable MUST be set to one of those values. 
 - Literals can be Strings, numbers, and etc. 
@@ -318,8 +322,7 @@ TOPIC: Nullable Types (null | undefined)
 - if in case we need them we can pass using UNION Types. 
 
 Ex. name: string|null|undefined 
-
-
+ 
 TOPIC: OPTIONAL CHAINING: 
 ------------------------
 
@@ -331,7 +334,7 @@ Ex. customer?.birthday?.getFullYear() ;
 Ex. customers?.[0] 
 Ex. variableName?.(arguments..) . 
 
-Above code expressions Will be executed if variable name
+NOTE: Above code expressions Will be executed if variable name
     references an actual function/object
 
 
@@ -343,7 +346,7 @@ Ex. customers?.[0] ?? 'No Customers'
 TOPIC: Type Assertions: (as keyword OR <>) 
 -----------------------
 
-IMPORTANT: The 'as' keyword doesn't perform any TYPE CONVERSION. 
+IMPORTANT: The 'as' keyword DOESN'T perform any TYPE CONVERSION. 
 It just asserts that we know more about the data type of an element 
 than TSC 
 
@@ -364,9 +367,10 @@ let phone = document.getElementById('phone') as HTMLInputElement ;
 TOPIC: UNKNOWN TYPE 
 --------------------
 
-- Safer version of any. Represents Any value but unlike any, we 
+- Safer version of any type. 
+- Represents Any value but unlike any, we 
 can't perform any operatons on unknown type BEFORE using type-GUARD
-for different types. 
+for narrowing down to different types. 
 
 NOTE: USING UNKNOWN TYPE >>>> ANY TYPE. 
 As compiler makes us to use TYPE-Checking to make sure that 
@@ -399,15 +403,19 @@ Ex. function render (document:unknown) {
     if (typeof document === 'string') { 
       ... access to all inbuilt number methods. 
     }
+
+    if (customObject instanceOf className) { 
+      ..... access all the inbuilt object methods 
+    }
 }
 
 TOPIC => NEVER TYPE
 -------------------
 
 - Represents value that never occur. 
-- Helps detect UNREACHABLE CODE which would be ignored otherwise. 
-- Compiler infers return type void and thus the UNREACHABLE code isn't 
-detected.
+- Helps detect UNREACHABLE CODE which would be ignored otherwise.
+- WHY?: Compiler infers return type void and thus the UNREACHABLE
+ code isn't detected.
 
 NOTE: CASE 1 
 
@@ -417,8 +425,8 @@ function reject(message:string ='Error Message'): never {
 }
 
 reject() ; 
-console.log('This is an unreachable code which will be detected now
-at compile time only') ; 
+console.log('This is an unreachable code which will now be detected 
+at compile time only because return type of function is never') ; 
 
 NOTE: CASE 2 
 
@@ -432,5 +440,357 @@ reject() ;
 console.log('This is an unreachable code that will NOT
 be detected now at compile time because Compiler infers the 
 return type of reject function to be void. ') ; 
+
+TS TYPES: any, unknown, never, enum(set of constant), tuple(entry[])
+
+
+TOPIC: CLASSES, INTERFACES AND OBJECT-ORIENTED-PROGRAMMING: 
+----------------------------------------------------------
+
+- Objects are building blocks of application.
+- Object contains DATA (state) and Operations (behavior)
+- Data => Properties and behavior => methods 
+
+Real World => LoginForm, EmailService objects => Each perform a 
+single task and can be reused multiple times. 
+
+TOPIC: CREATING CLASSES: 
+------------------------
+
+- Class: Blueprint for creating object. 
+
+- Constructor: A special function inside a class. 
+   (called when new object is created using new keyword) with the
+  job of initializing the fields to the GIVEN/DEFAULT values. 
+
+- Constructor always returns an instance of a class. A new object
+
+- this keyword here, references the current class. 
+
+- contains methods for behavior 
+
+- Properties are only for TS. In JS the constructor function simply 
+initializes given properties on the new object. 
+
+
+class Account { 
+  id: number ;  
+  owner: string ; 
+  balance: number ; 
+
+  constructor(id: number, owner:string, balance:number) { 
+    this.owner = owner ; 
+    this.balance = balance ;
+    this.id = id  ; 
+  }
+
+  deposit(amount:number): void { 
+    if (amount <= 0)
+       throw new Error ('AHAHAHAH twerp!') ; 
+
+    this.balance += amount ; 
+  }
+}
+
+TOPIC: Creating Objects 
+in VSCODE, blue members - properties and Purple Mumbers - methods
+
+const account = new Account(1,'Mosh',0) ; 
+
+console.log(account instanceOf Account) => prints true  
+
+TOPIC: READ ONLY and OPTIONAL Properties:
+-----------------------------------------
+
+readonly id: number ; - readonly property
+nickname?: string ;  - optional property 
+
+
+TOPIC: ACCESS Modifers: 
+
+- control the access of proprties and methods of classes. 
+- private, public and protected
+- properties are public by default 
+
+- private properties are only accessible inside a Class. 
+- By convention, prefixed using _  Ex. private _balance:number ; 
+
+- can use getters and setters to modify/work with private fields
+  and private methods are helper methods anyway. 
+
+IMPORTANT: PARAMETER PROPERTIES: 
+
+Declaring properties and initializing them using constructor 
+is repetitive. And it can be shortened by : 
+
+constructor(
+    public readonly id: number,
+    private _owner: string,
+    public balance: number
+  ) { }
+
+
+now ts compiler will automatically declare these properties 
+with these access modifiers and keywords in our class and also 
+initialize them in constructor.
+
+TOPIC: Getters and Setters 
+----------------------------- 
+- getters and setters are methods but ACCESSED and worked with
+like they're properties. 
+
+get keyword -> getter method -> returns value of private property
+-> isn't called but accessed like property. 
+
+Ex. 
+get balance(): number  { return this._balance ; }
+const accountBalance = account.balance ; 
+
+set keyword -> setter method -> sets value of private property
+
+Ex. set balance(value:number):void { 
+   if (value <= 0) 
+       throw new Error('Invalid Value') ; 
+
+   this._balance = value ; 
+}
+
+account.balance = 1 ;  ==> SAME AS  account.balance(1) under the hood
+
+
+TOPIC: Index signature Property: 
+--------------------------------
+
+- since TS is stickler when it comes to object shape, we can't 
+add properties dynamically 
+
+- ISP is a special property. 
+- used to add properties to objects dynamically (like JS) 
+- with this, we get Dynamic Properties + Type Safety 
+
+class SeatAssignment { 
+  // A1: 'Mosh'; 
+  // A2: 'John'; ......
+
+  [seatNumber: string]: string; 
+}
+
+const seats = new SeatAssignment() ; 
+seats['A1'] = `Mosh` ; 
+seats['A2'] = `John` ; 
+seats.A3 =.....    Dynamic Property Addition + Type Safety
+
+
+TOPIC: STATIC MEMBERS: 
+---------------------
+
+- static keyword 
+- Property that belongs to a class and not an object 
+- can't modify using this. because this references 
+    the current object and not the class.
+
+ClassName.propertyName  => accessed like this. 
+
+-In Js these are directly applied on constructorfunctions
+Ex. Array.from() . 
+
+NOTE: getters and setters modifying static properties must 
+have static keyword too. 
+
+TOPIC: Inheritance: 
+-------------------
+
+Put common code in another parent class and have others inherit 
+from this parent class. In this way no repetition of code. 
+
+- Allows to reuse our code. 
+- Child/Derived/Sub class inherits from Parent/Base/Super class. 
+
+- Parent Class inherits all the public properties of Parent Class.
+Child class(es) can override the members (polymorphism) and if a member
+is not present in child class, it is searched in parent class. 
+(prototypical inheritence chain). 
+
+- Constructor of derived classes must have super() call, where 
+super() is the constructor of the base(parent) class.
+- In super(), just add the values and not the access keywords, as
+The fields are already initialized in parent class. 
+
+class Person { 
+  constructor(public firstName:string, public lastName:string) { } 
+
+  get fullName() { 
+    return `${this.firstName} ${this.lastName}` ; 
+  }
+
+  walk() { 
+    console.log('can Walk') ; 
+  }
+}
+
+class Student extends Person { 
+  constructor(private readonly studentId:number, 
+                        firstName:string, lastName:string) { 
+    super(firstName, lastName) ; 
+  }
+
+  takeTest() {
+    console.log(`students take test`) ; 
+  }
+}
+
+NOTE: If no constructor in DERIVED/child class that means we 
+REUSE the constructor from base/parent class and we don't want 
+to add any additional properties to the derived class. 
+
+NOTE: student object will inherit all the properties from the 
+parent Person object + it will have its own properties. 
+
+IMPORTANT-NOTE: Each class must be in a different module. 
+Use modules and export/import features.  
+
+TOPIC: Method-overriding: 
+-------------------------
+
+IMPORTANT: super references the BASE CLASS. Can use to get its 
+properties. super(), super.fullName. etc. 
+
+- changing the implementation of an inherited method inside a child
+class (without changing the signature)
+
+override get fullName() { 
+  // `Professor ${this.firstName} ${this.lastName}` ;  OR 
+  return `Professor ` + super.fullName ;
+}
+
+TOPIC: polymorphism 
+
+- situation where an OBJECT can take many shapes/forms. 
+- useful because we can create changes without changing the code.
+Just based on inheritence and method-overriding. 
+
+Ex.  printNames([
+      new Student(12121,'John', 'Smith') ; 
+      new Teacher(121212,'John','Wick') ; 
+]) ; 
+
+function printNames(people:Person[]):void { 
+  people.forEach(person => console.log(person.fullName)) ;
+}
+
+NOTE: printNames() takes a Person[] but in forEach method 
+in each iteration, Person object is changing forms. Sometimes, 
+it's a Teacher or sometimes it's a student. 
+
+We can also have principal object without modying the printNames
+function for that. 
+
+IMPORTANT NOTE:  OPEN CLOSE PRINCIPLE for OOP:  
+- Classes should be OPEN FOR EXTENSION and CLOSED for modification
+- we can inherit from them but can't modify them. 
+
+- If IN A CLASS, multiple methods with same name and different 
+signature, then METHOD OVERLOADING. 
+Ex   .remove(int index) and .remove(int element) 
+
+
+TOPIC:  PRIVATE AND PROTECTED members: 
+---------------------------------------
+
+- similar to private members EXCEPT for the fact that they 
+CAN BE INHERITED by child classes 
+- can't be access in objects, but accessible within the class.
+
+in the child classes, this.protectedMember can be accessed. 
+
+TOPIC: ABSTRACT CLASS and METHOD : 
+
+- abstract: Existing in thought/idea but not in concrete reality
+
+NOTE: Abstract Methods can only exist in Abstract Classes 
+
+- if you want to stop from creating an instance of a class, 
+due to some reasons => declare it abstract 
+
+- Abstract classes have ABSTRACT METHODS 
+(methods with no implementation). They're used as templates/contracts.
+Methods with only signatures.
+
+- abstract classes can be used to create template of code for 
+child classes. But we don't want the class to be instantiated 
+
+SYNTAX: 
+abstract class AbstractClass { 
+  constructor(public color: string) { } 
+
+  abstract render():void ; // no implementation thus no {}
+}
+
+NOTE: Abstract has no representation in JS, IT's a TYPESCRIPT 
+concept. 
+
+NOTE: In JS, we don't have interfaces. Interfaces are ignored by
+TSC compiler while transpiling to js 
+
+NOTE: When methods have login/implementation for child classes 
+to inherit and use , then use abstract. If only declarations, then use 
+use interface. 
+
+
+TOPIC: INTERFACES: 
+----------------
+- keyword: interface 
+- sometimes interfaceNames are prefixed using I 
+
+- Used for determining SHAPE/INTERFACE for creating objects 
+- Tell What should be done. How it should be done is implementation
+   of that individual class.
+
+- no constructors foor interfaces.  
+
+- Ex.Classes implementing List<> Interface must have .remove() 
+method. How elements are removed is implementation details 
+LinkedList<> and ArrayList<> classes both have different ways for 
+that. 
+
+- Interfaces can only have declaration and no implementation. 
+- Interfaces can use Inheritance among each other. 
+
+interface Calender { 
+  name: string ; 
+  addEvent() : void ; 
+  removeEvent(): void ; 
+}
+
+class XYZ implements Calender { 
+  constructor(public name:string){ } 
+
+  addEvent() { 
+    .....
+    ..... some implementation 
+  }
+
+  removeEvent() { 
+    ....
+    .... some implementation 
+  }
+}
+
+- With INTERFACES, objects can have SHAPE. 
+- implementation is specific to those classes. 
+
+NOTE: 
+IN TS, ALIASES and INTERFACE can be used interchangibly. 
+Both determine the shape of object. 
+But convention is to use interface in front of 'extends' keyword.
+
+IMPORTANT: We use static properties where we need their single 
+instance in memory. Accessed using CLASSNAME
+
+
+TOPIC: GENERIC/REUSABLE TYPES: 
+------------------------------
+
+
 
 
