@@ -121,6 +121,7 @@ console.log(owner);
 
 // Interface (Homo Sapien) => Person => Teacher and Student
 
+/*
 interface Species {
   readonly speciesName: string;
   canEat(): void; // abstract method
@@ -167,9 +168,23 @@ class Student extends Person {
     console.log(`attends school`);
   }
 }
+*/
 
-const myself: Student = new Student(`HomoSapian`, `Avi`, `Tranny`, `12121`);
-myself.gender = "Male";
+interface Species {
+  name: string;
+  era: string;
+}
 
-console.log(myself.gender);
-myself.canEat();
+type ReadOnlySpecies = {
+  readonly [Key in keyof Species]: Species[Key];
+};
+
+const myClass: {
+  standard: string;
+  division: string;
+  building: string;
+} = {
+  standard: "10",
+  division: "B",
+  building: "Old Building",
+};

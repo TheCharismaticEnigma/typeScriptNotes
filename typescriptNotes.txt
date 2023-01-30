@@ -1,5 +1,7 @@
 TYPESCRIPT: 
 
+IMPORTANT: READ Documentation on typescriptlang.org
+
 NOTE: TS is like having JS with JAVA features and behavior . 
 OOP like JAVA, Static Typing like JAVA, Generics like JAVA. 
 In short combination of JAVA and JS 
@@ -787,10 +789,198 @@ But convention is to use interface in front of 'extends' keyword.
 IMPORTANT: We use static properties where we need their single 
 instance in memory. Accessed using CLASSNAME
 
+NOTE: Every childClass can be a parentClass but not vice versa
+
 
 TOPIC: GENERIC/REUSABLE TYPES: 
 ------------------------------
 
+WHY? The Problem they solve : 
+
+- Static and Rigid structure. No dynamic type-changes possible. 
+
+- If we use any to solve this, we'd lose TYPE-SAFETY, IntelliSense
+and other TS Benefits.  
+
+- Provides Generic/Common and Reusable solution. 
+
+NOTE: T means template. 
+Comes from C++ template classes. so, c++ templateClasses === 
+TS Generic Classes. 
+
+- Using Generic Classes, get 
+  TypeSafety + IntelliSense without repeating yourself. 
+
+class KeyValuePair<K,V> { 
+  constructor(public key:K, public value:V) {}
+}
+
+const numStrPair = new KeyValuePair<number,string>(12,'a') ; 
+const strStrPair = new KeyValuePair('twerp','a') ;
 
 
+WHY? 
+Without Generics, we would have to repeat the code of class
+multiple times or annotate key to be of any type. 
+Which are both performance-hindering. 
 
+TOPIC: GENERIC Functions: 
+-------------------------- 
+
+SYNTAX:   function wrapInArray<T>(value:T) { 
+             return [value] ; 
+          }
+
+const array = wrapInArray('a') ; 
+
+- if (typeof argument === 'string') => array:string[] 
+- if (argument instanceOf Person)   => array:Person[] 
+
+
+TOPIC: GENERIC Interfaces: 
+-------------------------- 
+
+- Type Guarding for all the scenarios and custom/primitive results
+is near impossible. Generics helps is to eliminate that step. 
+Type Checking + Dynamic Inputs + IntelliSense. 
+
+NOTE: Syntax: 
+
+interface Result<T> {
+  data: T | null ; 
+  error: string | null ; 
+}
+
+
+NOTE: if a function returns a GENERIC result, then the function 
+must be generic function too. 
+
+function fetchResult<T> (url:string): Result<T> {  
+  // returns an object implementing Result<T> interface 
+
+  return { data:null , error: null }; 
+}
+
+if we call the fetchFunction with , 
+
+const result = fetch<User>(`ht..s://.....`) ; 
+
+then result will be of type Result<User>. 
+the data property will be a User object and we can access user 
+properties using result.data. 
+
+
+TOPIC :Generic Constraints : 
+-----------------------------
+
+- use extends keyword. Also applicable on CUSTOM CLASSES. 
+Ex. <T extends Person> that means parameter can only be instance of 
+Person or all the sub-classes that extend Person class and derived
+from it (directly or indirectly) 
+
+- can constrain by: Primtive Types, Interfaces, Classes, 
+or even shape of an object.
+
+ (<T extends {name:string}> => only objects that confirm to this shape 
+ can be passed  )
+
+WHY? ->  LIMITING the Type of objects that a 
+function CAN receive. 
+
+function echo<T extends Person | string>(value:T):T { 
+  return value ; 
+} 
+
+-> function will only take specific arguments ! 
+
+
+TOPIC: Extending Generic Classes: 
+--------------------------------
+
+- passing on the Generic Type parameter onto child class(es).
+- child Class(es) PARAMETER TYPE === Parent Class Parameter type.
+
+NOTE: Interfaces in TS is a concept only FOR TS and for better 
+code-organization and it's completely ignored in JS conversion. 
+
+NOTE: Scenrio-1: Passing on the generic type parameter 
+
+class Compressible<T> extends Store<T> { 
+  .. T is passed on from Store to Compressible. 
+  If Store<string> then Compressible<string>
+}
+
+NOTE: Scenario-2 : Restricting Generic Type Parameter 
+
+class SearchableStore<T extends {name:string}> 
+                   extends Store<T>  { 
+
+  }
+
+SearchableStore will accept the Type as long as the class has 
+property name of type string. 
+
+NOTE: Scenrio-3 : Fixing the Generic Type Parameter 
+
+class ProductStore extends Store<Product> { 
+  ... 
+}
+
+Now the ProductStore class 
+will take Parameters of Type Product. 
+
+
+TOPIC: Key-Of Operator :
+------------------------
+
+- keyof T ==> returns Union of Properties of type T 
+
+Ex. interface Product { 
+    name:string ;  
+    price: number ;
+  }
+
+  keyof Product => 'name' | 'price' ; 
+
+
+TOPIC: TYPE-MAPPING: 
+-------------------
+
+- basing a type on another type 
+- create a new type based on another type with some changes. 
+- use type Aliases. 
+
+interface Product { 
+  name: string ; 
+  price: number ; 
+}
+
+type ReadOnlyProduct = { 
+  readonly [Property in keyof Product] : Product[Property] ; 
+}
+
+NOTE: Product[Property] gets the data type of property dynamically. 
+If Property === 'name' => Product[Property] = 'string' 
+
+NOTE: key of returns the union of all properties in Product Type
+
+NOTE: in operator iterates over all the keys and in each 
+       iteration gets a key. => like for loop 
+
+IMPORTANT: 
+CAN ADD Generic Type to the Type-Mapping 
+
+type ReadOnly<T> = { 
+  readonly [Key in keyof T] : T[Key] ; 
+  // get each key in T and get its data type too. 
+}
+
+let product:ReadOnly<Product> = { 
+
+} 
+
+NOTE: Making a new interface for all optional Properties. 
+
+type Optional<T> = { 
+  [Key in keyof T]?: T[Key] ; 
+}
