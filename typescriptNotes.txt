@@ -1,6 +1,7 @@
 TYPESCRIPT: 
 
 IMPORTANT: READ Documentation on typescriptlang.org
+IMPORTANT: VUE.js is written using TS. So understand it deeply.
 
 NOTE: TS is like having JS with JAVA features and behavior . 
 OOP like JAVA, Static Typing like JAVA, Generics like JAVA. 
@@ -946,7 +947,7 @@ Ex. interface Product {
 TOPIC: TYPE-MAPPING: 
 -------------------
 
-- basing a type on another type 
+- basing (and creating) a type on another type. 
 - create a new type based on another type with some changes. 
 - use type Aliases. 
 
@@ -984,3 +985,227 @@ NOTE: Making a new interface for all optional Properties.
 type Optional<T> = { 
   [Key in keyof T]?: T[Key] ; 
 }
+
+TOPIC: DECORATORS: 
+------------------
+
+- Attributes applied to Classes and their Members. 
+- WHY?: for manipulating and changing their behavior
+
+- Under The Hood: 
+DECORATORS are functions (called by Js Runtime) which get our 
+classes as arguments. And they can change/add members to our 
+class. 
+
+- In TS, create custom decorators. In Vue, you have inbuilt.
+
+
+TOPIC: Class Decorators: 
+------------------------
+
+- Arguments wary on where we'd apply decorator function. 
+
+- For classes,add ONE Parameter (which represents
+              constructor function of class) 
+
+- If Type of Parameter is function =>
+         Assumed that it's constructor of class. 
+
+- Can add, delete, change properties of class. 
+
+IMPORTANT: 
+- PROPERTIES are manipulated on constructor.prototype object. 
+Added to prototype, deleted from prototype. 
+
+- all instances of the constructor function and all the classes 
+ with the decorator inherit those changes. 
+
+NOTE: Can solve problem using inheritence. 'Decorators' is 
+just another tool
+
+- Classes are modified without the need of instantiating. 
+
+function Component(constructor:Function) { 
+  constructor.prototype.addProperty = `PropertyAdded` ; 
+  construcotr.prototype.isModified  = true ; 
+}
+
+@Component
+class Person {} 
+
+NOTE: all classes created using Person constructor function 
+will inherit those changes. 
+
+
+TOPIC: PARAMETERIZED Decorators: 
+-------------------------------- 
+
+- For creating PARAMETERIZED decorators, create a function 
+with parameters, which in turn returns a Decorator function(which
+applies these properties on the constructor.prototype object). 
+(Decorator Factory)
+
+- DecoratorFactory(parameter:any) => DecoratorFunction. 
+
+NOTE: SYNTAX: 
+
+const ComponentOptions = { 
+  selector:string ; 
+}
+
+function Component(options:ConstructorOptions) { 
+  return function (constructor:Function) { 
+    constructor.prototype.options = options ; 
+    constructor.prototype.isModified = true; 
+  }
+}
+
+@Component({selector:"asasa"}) ; 
+public class Person { }
+
+NOTE: Type Aliases is a concept just like interface. Only for tsc
+and ignored by TSC while TRANSPILATION. 
+
+
+TOPIC: Decorator Composition:
+------------------------------ 
+
+- Applying multiple Decorators to a class/its members. 
+
+- If multiple Decorators are applied, then THEY ARE APPLIED 
+in REVERSE ORDER. 
+Ex.   f(g(x)) ==> 1. value = g(x) is evaluated --> f(value) ;
+
+function Pipe(constructor:Function) { .... } 
+function Decorator(constructor:Function) {....} 
+
+@Pipe 
+@Decorator 
+
+public class Person { } ; 
+
+NOTE: 1. Decorator will be called first => Then the Pipe 
+
+
+IMPORTANT: EVERY PROPERTY in an object has a property called 
+PropertyDescription that DESCRIBES that object.
+.value - references the target property.  
+
+TOPIC: Method Decorators : 
+
+- Mostly used to enhance our methods in objects. 
+
+- If Decorator(Function) is applied on a function/method, 
+              then three parameters should be passed. 
+
+1. target:any ==> Parent containing the method 
+2. name: string => function Name
+3. descriptor: PropertyDescriptor.  
+
+function Log(target:any, name:string,
+               descriptor:PropertyDescriptor){
+
+  // Because of (value:any) => no IntelliSense => 
+  we do type assertion to tell compiler that 
+  this is a function => we can access inbuilt function methods
+
+  const originalValue = descriptor.value as Function ; 
+
+  descriptor.value = function(...arguments:any) { // REST
+    originalValue.call(this, ...arguments) ; // SPREAD
+  }
+
+  new implementation of function takes varying number of argumentsof 
+  type any, using REST operator bundled into an array.
+}
+
+class Person { 
+
+@Log 
+say(message:string) { 
+  console.log(`Person says ${message}) ; 
+}
+
+}
+
+
+TOPIC: Accessor Decorators: - 
+--------------------------- 
+
+- applied on getters (get) and setters (set) 
+
+- similar to method decorators. WHY? accessors are methods under
+the hood. 
+
+- to access the original getter using PropertyDescriptor object, 
+descriptor.get and descriptor.set 
+
+function Capitalize(target: any, key: string, descriptor: PropertyDescriptor) {
+  const prevGetter = descriptor.get;
+
+  descriptor.get = function () {
+    // reassing new function
+    const result = prevGetter?.call(this); // getters have no argument
+
+    return typeof result === "string" ? result.toUpperCase() : result;
+  };
+}
+
+class Person {
+  constructor(private _name: string) {}
+
+  @Capitalize
+  get name() {
+    return this._name;
+  }
+}
+
+const meself = new Person(`Sausage`);
+console.log(meself.name);
+
+
+TOPIC PROPERTY DECORATORS:
+--------------------------
+
+- Enhance existing properties. 
+- similar to method decoratior
+
+NOTE: 
+
+- Take two parameters (target:any and name:string) ONLY. 
+  NO PropertyDescriptor. 
+
+- Instead we create a custom PropertyDescriptor object for our 
+property and assign it to the property using the 
+function. 
+
+Using Object.defineProperty
+       (target:any
+        ,propertyName:string
+        ,descriptorObject:PropertyDescriptor); 
+
+NOTE: Object.getPrototypeOf() => returns prototype. 
+
+      Object.getOwnPropertyDescriptor
+                (objectName, propertyName:string) 
+                 => returns descriptor object for that property.
+
+Own => not from prototype chain. 
+
+descriptor:PropertyDescriptor object properties: 
+1. Configurable: (can delete property) 
+2. Enumerable: (determines if it'll show up in Object.keys())
+3. writable: (false => becomes readonly property) 
+4. value: returns actual value. (.get for getters) 
+
+
+TOPIC: MODULES: 
+---------------
+
+- split code in different module. Each serving a purpose. 
+
+
+
+
+
+

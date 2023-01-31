@@ -170,6 +170,7 @@ class Student extends Person {
 }
 */
 
+/*
 interface Species {
   name: string;
   era: string;
@@ -179,12 +180,136 @@ type ReadOnlySpecies = {
   readonly [Key in keyof Species]: Species[Key];
 };
 
-const myClass: {
-  standard: string;
-  division: string;
-  building: string;
-} = {
-  standard: "10",
-  division: "B",
-  building: "Old Building",
+
+// const homoSapiens: ReadOnlySpecies = {
+//   name: "Homo Sapien",
+//   era: "Jurassic "
+// }
+
+type ReadOnly<G> = { 
+  readonly [Key in keyof G]: G[Key];  // propertyName:propertyType
+}
+
+const homoSapiens: ReadOnly<Species> = {
+  name: "Homo Superior",
+  era: "jurrasic Era "
+}
+*/
+
+/*
+function Enhance(constructor: Function) {
+  constructor.prototype.isModified = true;
+  constructor.prototype.uniqueId = new Date();
+}
+
+@Enhance
+class Person {}
+
+const myself = new Person();
+
+*/
+
+/*
+type FreqTable = {
+  [stringKey: string]: number;
 };
+
+function tableType(table: FreqTable): string {
+  return typeof table;
+}
+
+const table: FreqTable = {
+  a: 1,
+};
+
+console.log(tableType(table));
+*/
+
+// Decorator for accessors (getters and setters)
+
+/*
+function Capitalize(target: any, key: string, descriptor: PropertyDescriptor) {
+  const prevGetter = descriptor.get;
+
+  descriptor.get = function () {
+    // reassing new function
+    const result = prevGetter?.call(this); // getters have no argument
+
+    return typeof result === "string" ? result.toUpperCase() : result;
+  };
+}
+
+class Person {
+  constructor(private _name: string) {}
+
+  @Capitalize
+  get name() {
+    return this._name;
+  }
+}
+
+const meself = new Person(`Sausage`);
+console.log(meself.name);
+
+// Property Modifier
+
+function MaxLength(maxLength: number) {
+  // modifier factory
+
+  // For propertyModifier, pass the target and key.
+  // In modifier function => create custom descriptor and attach onto the
+  // property using Object.defineProperty(target,propertyName,proprtyDescriptor)
+
+  return function (target: any, propertyKey: string) {
+    let value: string;
+
+    // applying getter and setter for property descriptor.
+
+    const descriptor: PropertyDescriptor = {
+      // attaching a setter to the property.
+
+      get() {
+        return value;
+      },
+
+      set(newPassword: string) {
+        if (newPassword.length > maxLength)
+          throw new Error(`AHAHAHAHA PIN-HEADED-Twerp AHAHA!`);
+
+        value = newPassword;
+      },
+    };
+
+    // attach descriptor onto the property.
+    Object.defineProperty(target, propertyKey, descriptor);
+  };
+}
+
+class User {
+  @MaxLength(8)
+  password: string;
+
+  constructor(password: string) {
+    this.password = password;
+  }
+}
+
+const newUser = new User("sasaa");
+const descriptor = Object.getOwnPropertyDescriptor(newUser, newUser.password);
+
+console.log(descriptor);
+*/
+
+function Sauce(sauce: string) {
+  // for class one argument: constructor function
+  return function (constructor: Function) {
+    constructor.prototype[`sauce`] = `${sauce.toLowerCase()}`;
+    console.log(`Property Applied`);
+    console.log(constructor.prototype.sauce);
+  };
+}
+
+@Sauce("pesto")
+class Pizza {
+  constructor() {}
+}
