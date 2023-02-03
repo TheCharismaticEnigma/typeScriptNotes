@@ -38,6 +38,7 @@ const Person: {
 };
 
 */
+
 /*
 type Employee = {
   readonly id: number;
@@ -298,18 +299,17 @@ const newUser = new User("sasaa");
 const descriptor = Object.getOwnPropertyDescriptor(newUser, newUser.password);
 
 console.log(descriptor);
+
+
+import { Circle, Square } from "./shapes";
+
+const myCircle = new Circle(32323232);
+console.log(myCircle.radius);
+
+const square = new Square(1212);
+console.log(square.width);
 */
 
-function Sauce(sauce: string) {
-  // for class one argument: constructor function
-  return function (constructor: Function) {
-    constructor.prototype[`sauce`] = `${sauce.toLowerCase()}`;
-    console.log(`Property Applied`);
-    console.log(constructor.prototype.sauce);
-  };
-}
+const freq: number[] = [2, 3, 2, 4, 5];
 
-@Sauce("pesto")
-class Pizza {
-  constructor() {}
-}
+console.log(freq.filter((x) => x % 2));

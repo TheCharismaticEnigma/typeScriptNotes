@@ -91,6 +91,8 @@ JS - number, string, boolean, undefined,
 
 TS - any,unknown,never, enum, tuple
 
+NOTE: don't use any type until you're explicitly typing. 
+
 In TS, separate a large number's digits with _ 
 let sales:number = 123_456_789 ; 
 
@@ -1203,6 +1205,40 @@ TOPIC: MODULES:
 ---------------
 
 - split code in different module. Each serving a purpose. 
+- imports and exports same as JS. 
+
+- commonJs module format: initially came with Node.js.
+
+- import * as ..... from '' ; 
+
+- REEXPORTING: export multiple things from different modules 
+into a single module. And then export it from there to use it 
+in different modules. 
+In this way you dont' have to export 10 things from 10 different 
+modules. 
+
+
+TOPIC: INCLUDING JS CODE IN TS PROJECTS: 
+---------------------------------------- 
+
+- By default JS code isn't included in compilation process. 
+- Can't import JS code(.js file) in TS file by default
+- So, in tsconfig.json ==> allowJs=true ; 
+
+In tsConfig.json file, 
+- For browsers: We set module format to Es2015 
+- We can do that for node.js to but that's work. 
+
+NOTE: TYPE-CHECKING in JS code: checkJs=true ; 
+
+NOTE: Temporary telling tsc to not check for a file. 
+On top of that file ==> // @ts-nocheck 
+
+NOTE: Describing TYPE-INFORMATION for our JS code to TSCompiler
+is JSDoc. 
+
+Special Comment (JSDoc Comment) 
+
 
 
 
